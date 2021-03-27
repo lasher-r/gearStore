@@ -9,4 +9,13 @@ router.post('/', async (req, res) => {
     res.send(item)
 })
 
+router.get('/', async (req, res)=>{
+    try {
+        const gear = await Gear.find({})
+        res.json(gear)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+    
+})
 module.exports = router

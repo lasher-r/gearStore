@@ -43,4 +43,61 @@ describe('GEAR', () => {
                     })
             })
     })
+
+    const post = (data) => {
+        return new Promise((resolve, reject) => {
+            chai.request(server)
+                .post('/gear')
+                .send(data)
+                .end((err, res) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    if (res.status != 200) {
+                        reject(new Error(res.status))
+                    }
+                    resolve(res)
+                })
+        })
+    }
+
+    it('gets all gear', (done) => {
+        data = [
+            {
+                name: 'tent',
+                description: 'an orange tent',
+                category: 'Big 3',
+                weight: 36,
+                qty: 1,
+            },
+            {
+                name: 'pack',
+                description: 'a blue pack',
+                category: 'Big 3',
+                weight: 15,
+                qty: 1,
+            },
+            {
+                name: 'sleeping bag',
+                description: 'a red sleeping bag',
+                category: 'Big 3',
+                weight: 36,
+                qty: 1,
+            },
+        ]
+        Promise.all(data.map(post))
+            .then((_) => {
+                chai.request(server)
+                    .get('/gear')
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Array').of.length(data.length)
+                        done()
+                    })
+            })
+            .catch(done)
+    })
 })
