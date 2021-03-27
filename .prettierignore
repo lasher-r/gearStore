@@ -1,0 +1,5 @@
+bitbucket-pipelines.yml
+package-lock.json
+.next
+node_modules/
+doc/
