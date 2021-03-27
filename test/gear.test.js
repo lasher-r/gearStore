@@ -114,9 +114,25 @@ describe('GEAR', () => {
     })
 
     it('updates a gear item', (done) => {
-        post(data[0]).then((saved) => {
-            const { id } = saved
-            const update = { description: 'a yellow tent' }
-        })
+        post(data[0])
+            .then((saved) => {
+                const update = { description: 'a yellow tent' }
+                chai.request(server)
+                    .patch(`/gear/${saved._id}`)
+                    .send(update)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Object')
+                        res.body.should.not.eql(saved)
+                        res.body.should.have
+                            .property('description')
+                            .eql(update.description)
+                        done()
+                    })
+            })
+            .catch(done)
     })
 })
