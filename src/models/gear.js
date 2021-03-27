@@ -8,4 +8,6 @@ const gearSchema = mongoose.Schema({
     qty: Number,
 })
 
-module.exports = mongoose.model(`${process.env.NODE_ENV}Gear`, gearSchema)
+const collection = process.env.NODE_ENV == 'test' ? 'test-gear' : 'gear'
+
+module.exports = mongoose.model(collection, gearSchema)
