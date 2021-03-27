@@ -15,17 +15,34 @@ describe('GEAR', () => {
         gear.deleteMany({}, () => done())
     })
 
-    it('Creates a new gear item', (done) => {
-        const data = {
+    const data = [
+        {
             name: 'tent',
             description: 'an orange tent',
             category: 'Big 3',
             weight: 36,
             qty: 1,
-        }
+        },
+        {
+            name: 'pack',
+            description: 'a blue pack',
+            category: 'Big 3',
+            weight: 15,
+            qty: 1,
+        },
+        {
+            name: 'sleeping bag',
+            description: 'a red sleeping bag',
+            category: 'Big 3',
+            weight: 36,
+            qty: 1,
+        },
+    ]
+
+    it('Creates a new gear item', (done) => {
         chai.request(server)
             .post('/gear')
-            .send(data)
+            .send(data[0])
             .end((err, res) => {
                 if (err) {
                     done(err)
@@ -44,11 +61,11 @@ describe('GEAR', () => {
             })
     })
 
-    const post = (data) => {
+    const post = (d) => {
         return new Promise((resolve, reject) => {
             chai.request(server)
                 .post('/gear')
-                .send(data)
+                .send(d)
                 .end((err, res) => {
                     if (err) {
                         reject(err)
@@ -62,29 +79,6 @@ describe('GEAR', () => {
     }
 
     it('gets all gear', (done) => {
-        data = [
-            {
-                name: 'tent',
-                description: 'an orange tent',
-                category: 'Big 3',
-                weight: 36,
-                qty: 1,
-            },
-            {
-                name: 'pack',
-                description: 'a blue pack',
-                category: 'Big 3',
-                weight: 15,
-                qty: 1,
-            },
-            {
-                name: 'sleeping bag',
-                description: 'a red sleeping bag',
-                category: 'Big 3',
-                weight: 36,
-                qty: 1,
-            },
-        ]
         Promise.all(data.map(post))
             .then((_) => {
                 chai.request(server)
@@ -101,17 +95,10 @@ describe('GEAR', () => {
             .catch(done)
     })
 
-    it('gets one gear item', (done)=>{
-        data = {
-            name: 'tent',
-            description: 'an orange tent',
-            category: 'Big 3',
-            weight: 36,
-            qty: 1,
-        }
-
-        post(data).then((saved)=>{
-            chai.request(server)
+    it('gets one gear item', (done) => {
+        post(data[0])
+            .then((saved) => {
+                chai.request(server)
                     .get(`/gear/${saved._id}`)
                     .end((err, res) => {
                         if (err) {
@@ -122,6 +109,14 @@ describe('GEAR', () => {
                         res.body.should.eql(saved)
                         done()
                     })
-        }).catch(done)
+            })
+            .catch(done)
+    })
+
+    it('updates a gear item', (done) => {
+        post(data[0]).then((saved) => {
+            const { id } = saved
+            const update = { description: 'a yellow tent' }
+        })
     })
 })

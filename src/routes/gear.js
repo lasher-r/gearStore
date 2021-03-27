@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     res.send(item)
 })
 
-router.get('/', async (req, res)=>{
+router.get('/', async (req, res) => {
     try {
         const gear = await Gear.find({})
         res.json(gear)
@@ -18,9 +18,9 @@ router.get('/', async (req, res)=>{
     }
 })
 
-router.get('/:id', async (req, res)=>{
+router.get('/:id', async (req, res) => {
     const item = await Gear.findOne({ _id: req.params.id })
-	res.send(item)
+    res.send(item)
 })
 
 module.exports = router
