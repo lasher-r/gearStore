@@ -56,7 +56,7 @@ describe('GEAR', () => {
                     if (res.status != 200) {
                         reject(new Error(res.status))
                     }
-                    resolve(res)
+                    resolve(res.body)
                 })
         })
     }
@@ -99,5 +99,29 @@ describe('GEAR', () => {
                     })
             })
             .catch(done)
+    })
+
+    it('gets one gear item', (done)=>{
+        data = {
+            name: 'tent',
+            description: 'an orange tent',
+            category: 'Big 3',
+            weight: 36,
+            qty: 1,
+        }
+
+        post(data).then((saved)=>{
+            chai.request(server)
+                    .get(`/gear/${saved._id}`)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Object')
+                        res.body.should.eql(saved)
+                        done()
+                    })
+        }).catch(done)
     })
 })

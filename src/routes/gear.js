@@ -16,6 +16,11 @@ router.get('/', async (req, res)=>{
     } catch (error) {
         res.status(500).send(error)
     }
-    
 })
+
+router.get('/:id', async (req, res)=>{
+    const item = await Gear.findOne({ _id: req.params.id })
+	res.send(item)
+})
+
 module.exports = router
