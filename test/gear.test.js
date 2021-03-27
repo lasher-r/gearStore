@@ -135,4 +135,27 @@ describe('GEAR', () => {
             })
             .catch(done)
     })
+
+    it('deletes a gear item', (done) => {
+        post(data[0])
+            .then((saved) => {
+                chai.request(server)
+                    .delete(`/gear/${saved._id}`)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(204)
+                        gear.find({})
+                            .then((docs) => {
+                                docs.should.be.an('Array').of.length(0)
+                                done()
+                            })
+                            .catch((e) => {
+                                done(e)
+                            })
+                    })
+            })
+            .catch(done)
+    })
 })
