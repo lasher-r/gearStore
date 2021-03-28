@@ -14,6 +14,9 @@ mongoose.connect('mongodb://localhost:27017/gear', {
 const GearRoute = require('./routes/gear')
 app.use('/gear', GearRoute)
 
+const PackRoute = require('./routes/packs')
+app.use('/packs', PackRoute)
+
 app.listen(5000, () => {
     console.log('Server has started!')
 })
