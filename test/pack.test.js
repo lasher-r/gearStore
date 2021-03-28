@@ -54,6 +54,25 @@ describe('PACK', () => {
         },
     ]
 
+    const post = (data) => {
+        return new Promise((resolve, reject) => {
+            Gear.create(gearData)
+                .then((savedGear) => {
+                    data.gear = savedGear.map((x) => x._id)
+                    chai.request(server)
+                        .post('/packs')
+                        .send(data)
+                        .end((err, res) => {
+                            if (err) {
+                                reject(err)
+                            }
+                            resolve(res.body)
+                        })
+                })
+                .catch(reject)
+        })
+    }
+
     afterEach((done) => {
         Pack.deleteMany({}, () => Gear.deleteMany({}, () => done()))
     })
@@ -81,6 +100,42 @@ describe('PACK', () => {
                             .catch((e) => {
                                 done(e)
                             })
+                    })
+            })
+            .catch(done)
+    })
+
+    it('returns all packs', (done) => {
+        Promise.all(packs.map(post))
+            .then((_) => {
+                chai.request(server)
+                    .get('/packs')
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Array').of.length(packs.length)
+                        res.body[0].should.have
+                            .property('gear')
+                            .of.length(gearData.length)
+
+                        res.body[0].gear[0].should.have
+                            .property('name')
+                            .eql(gearData[0].name)
+                        res.body[0].gear[0].should.have
+                            .property('description')
+                            .eql(gearData[0].description)
+                        res.body[0].gear[0].should.have
+                            .property('category')
+                            .eql(gearData[0].category)
+                        res.body[0].gear[0].should.have
+                            .property('weight')
+                            .eql(gearData[0].weight)
+                        res.body[0].gear[0].should.have
+                            .property('qty')
+                            .eql(gearData[0].qty)
+                        done()
                     })
             })
             .catch(done)

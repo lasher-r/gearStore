@@ -20,4 +20,13 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/', async (req, res) => {
+    try {
+        const packs = await Pack.find({}).populate('gear')
+        res.json(packs)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
 module.exports = router
