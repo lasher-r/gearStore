@@ -216,4 +216,27 @@ describe('PACK', () => {
             })
             .catch(done)
     })
+
+    it('deletes a pack', (done) => {
+        post(packs[0])
+            .then((saved) => {
+                chai.request(server)
+                    .delete(`/packs/${saved._id}`)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(204)
+                        Pack.find({})
+                            .then((docs) => {
+                                docs.should.be.an('Array').of.length(0)
+                                done()
+                            })
+                            .catch((e) => {
+                                done(e)
+                            })
+                    })
+            })
+            .catch(done)
+    })
 })

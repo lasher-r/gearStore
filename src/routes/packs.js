@@ -43,4 +43,14 @@ router.patch('/:id', async (req, res) => {
     res.send(item)
 })
 
+router.delete('/:id', async (req, res) => {
+    try {
+        await Pack.deleteOne({ _id: req.params.id })
+        res.status(204).send()
+    } catch {
+        res.status(404)
+        res.send({ error: "Item doesn't exist!" })
+    }
+})
+
 module.exports = router
