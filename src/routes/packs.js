@@ -29,4 +29,9 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    const item = await Pack.findOne({ _id: req.params.id }).populate('gear')
+    res.send(item)
+})
+
 module.exports = router

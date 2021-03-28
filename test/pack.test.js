@@ -140,4 +140,52 @@ describe('PACK', () => {
             })
             .catch(done)
     })
+
+    it('gets a pack', (done) => {
+        post(packs[0])
+            .then((savedPack) => {
+                chai.request(server)
+                    .get(`/packs/${savedPack._id}`)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Object')
+
+                        res.body.should.have
+                            .property('gear')
+                            .of.length(gearData.length)
+
+                        res.body.gear[0].should.have
+                            .property('name')
+                            .eql(gearData[0].name)
+                        res.body.gear[0].should.have
+                            .property('description')
+                            .eql(gearData[0].description)
+                        res.body.gear[0].should.have
+                            .property('category')
+                            .eql(gearData[0].category)
+                        res.body.gear[0].should.have
+                            .property('weight')
+                            .eql(gearData[0].weight)
+                        res.body.gear[0].should.have
+                            .property('qty')
+                            .eql(gearData[0].qty)
+
+                        res.body.should.have
+                            .property('name')
+                            .eql(savedPack.name)
+                        res.body.should.have
+                            .property('description')
+                            .eql(savedPack.description)
+                        res.body.should.have
+                            .property('category')
+                            .eql(savedPack.category)
+                        res.body.should.have.property('weight')
+                        done()
+                    })
+            })
+            .catch(done)
+    })
 })
