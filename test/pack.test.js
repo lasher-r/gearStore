@@ -12,7 +12,6 @@ const Pack = require('../src/models/pack')
 chai.use(chaiHttp)
 
 describe('PACK', () => {
-
     const gearData = [
         {
             name: 'tent',
@@ -59,30 +58,31 @@ describe('PACK', () => {
         Pack.deleteMany({}, () => Gear.deleteMany({}, () => done()))
     })
 
-    it('saves a pack', (done)=>{
+    it('saves a pack', (done) => {
         Gear.create(gearData)
-        .then((savedGear)=>{
-            const p = {...packs[0]}
-            p.gear = savedGear.map(x=>x._id)
-            chai.request(server)
-            .post('/packs')
-            .send(p)
-            .end((err, res) => {
-                if (err) {
-                    done(err)
-                }
-                res.should.have.status(200)
-                res.body.should.be.an('Object')
+            .then((savedGear) => {
+                const p = { ...packs[0] }
+                p.gear = savedGear.map((x) => x._id)
+                chai.request(server)
+                    .post('/packs')
+                    .send(p)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Object')
 
-                Pack.find({})
-                    .then((docs) => {
-                        docs.should.be.an('Array').of.length(1)
-                        done()
-                    })
-                    .catch((e) => {
-                        done(e)
+                        Pack.find({})
+                            .then((docs) => {
+                                docs.should.be.an('Array').of.length(1)
+                                done()
+                            })
+                            .catch((e) => {
+                                done(e)
+                            })
                     })
             })
-        }).catch(done)
+            .catch(done)
     })
 })
