@@ -34,4 +34,13 @@ router.get('/:id', async (req, res) => {
     res.send(item)
 })
 
+router.patch('/:id', async (req, res) => {
+    const item = await Pack.findOne({ _id: req.params.id })
+    for (const key in req.body) {
+        item[key] = req.body[key]
+    }
+    await item.save()
+    res.send(item)
+})
+
 module.exports = router

@@ -188,4 +188,32 @@ describe('PACK', () => {
             })
             .catch(done)
     })
+
+    it('updates a pack', (done) => {
+        post(packs[0])
+            .then((saved) => {
+                const update = { description: 'the pack I want' }
+                chai.request(server)
+                    .patch(`/packs/${saved._id}`)
+                    .send(update)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err)
+                        }
+                        res.should.have.status(200)
+                        res.body.should.be.an('Object')
+
+                        res.body.should.have.property('name').eql(saved.name)
+                        res.body.should.have
+                            .property('description')
+                            .eql(update.description)
+                        res.body.should.have
+                            .property('category')
+                            .eql(saved.category)
+                        res.body.should.have.property('weight')
+                        done()
+                    })
+            })
+            .catch(done)
+    })
 })
